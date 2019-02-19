@@ -17,3 +17,5 @@ class ArticleSpiderItem(scrapy.Item):
     title = Field()
     link = Field()
     recent = Field()
+    article = Field()
+    domain = Field()
