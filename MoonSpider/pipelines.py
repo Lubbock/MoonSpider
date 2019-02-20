@@ -4,9 +4,10 @@
 #
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
-from pymongo import MongoClient
+
 
 from MoonSpider.items import ArticleSpiderItem, ArticleSpiderMainItem
+from MoonSpider.utils.DbUtils import DbUtils
 
 
 class MoonspiderPipeline(object):
@@ -15,15 +16,13 @@ class MoonspiderPipeline(object):
 
 
 class ArticleSpiderPipeline(object):
-    client = MongoClient('localhost', 27017)
-    db = client.article
-    collection = db.article
+    dbUtil = DbUtils()
 
     def __init__(self):
         self.fp = None
 
     def open_spider(self, spider):
-        self.collection.remove()
+        self.dbUtil.remove()
         print('爬虫开始')
 
     def process_item(self, item, spider):
@@ -34,9 +33,10 @@ class ArticleSpiderPipeline(object):
                 'recent': item['recent'],
                 'article': item['article'],
                 'domain': item['domain'],
-                'code': item['code']
+                'code': item['code'],
+                'article_order': item['article_order']
             }
-            self.collection.insert(article)
+            self.dbUtil.insert(article)
         return item
 
     def close_spider(self, spider):
@@ -44,15 +44,11 @@ class ArticleSpiderPipeline(object):
 
 
 class ArticleSpiderMainPipeline(object):
-    client = MongoClient('localhost', 27017)
-    db = client.article
-    collection = db.article
-
-    def open_spider(self, spider):
-        print('存储文章内容')
+    dbUtil = DbUtils()
 
     def process_item(self, item, spider):
         if isinstance(item, ArticleSpiderMainItem):
+            print('存储文章内容')
             my_query = {'link': item['link'], 'code': item['code']}
             update_query = {"$set": {'article': item['article']}}
-            self.collection.update_one(my_query, update_query)
+            self.dbUtil.update_one(my_query, update_query)

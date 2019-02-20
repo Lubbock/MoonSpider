@@ -2,6 +2,7 @@ from scrapy.spiders import Spider
 import scrapy
 
 from MoonSpider.items import ArticleSpiderItem, ArticleSpiderMainItem
+from MoonSpider.utils.DbUtils import DbUtils
 
 
 class ArticleSpider(Spider):
@@ -26,6 +27,11 @@ class ArticleSpider(Spider):
         # all_articles = response.xpath('//div[@class="listmain"]/dl/dd[position()>6]/a')
         i = 0
         links = []
+        article_nums = len(articles)
+        db = DbUtils()
+        recent = db.get_recent_article(self.article_code)
+        not_update = len(articles) - recent['article_order']
+
         for title in articles:
             item = ArticleSpiderItem()
             item['title'] = title.xpath("text()").extract_first().strip()
@@ -34,11 +40,21 @@ class ArticleSpider(Spider):
             item['domain'] = self.domain_name
             item['article'] = ""
             item['code'] = self.article_code
+            item['article_order'] = article_nums
+            if recent['article_order'] == 0:
+                links.append(item['link'])
+                yield item
+            elif not_update <= 6:
+                if (article_nums - 1) >= recent['article_code']:
+                    links.append(item['link'])
+                    yield item
+            elif article_nums <= 200:
+                links.append(item['link'])
+                yield item
+            article_nums -= 1
             i += 1
-            links.append(item['link'])
-            yield item
-        temps = [links[0]]
-        for link in temps:
+
+        for link in links:
             next_page = response.urljoin(link)
             yield scrapy.Request(next_page, callback=self.article_parse)
 

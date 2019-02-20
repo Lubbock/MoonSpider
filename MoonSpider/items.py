@@ -22,6 +22,7 @@ class ArticleSpiderItem(scrapy.Item):
     article = Field()
     domain = Field()
     code = Field()
+    article_order = Field()
 
 
 class ArticleSpiderMainItem(scrapy.Item):
