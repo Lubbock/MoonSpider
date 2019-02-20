@@ -1,20 +1,20 @@
-from scrapy.contrib.spiders import CrawlSpider, Rule
+from scrapy.spiders import Spider, Rule
 from scrapy.selector import Selector
-from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
+
 from scrapy.http import Request, FormRequest
 
 from MoonSpider.items import ZhihuItem
 
 
-class LoginSpider(CrawlSpider):
+class LoginSpider(Spider):
     name = "login_spider"
     allowed_domains = ["www.zhihu.com"]
     start_urls = [
         "http://www.zhihu.com"
     ]
     rules = (
-        Rule(SgmlLinkExtractor(allow=('/question/\d+#.*?',)), callback='parse_page', follow=True),
-        Rule(SgmlLinkExtractor(allow=('/question/\d+',)), callback='parse_page', follow=True),
+        # Rule(SgmlLinkExtractor(allow=('/question/\d+#.*?',)), callback='parse_page', follow=True),
+        # Rule(SgmlLinkExtractor(allow=('/question/\d+',)), callback='parse_page', follow=True),
     )
     headers = {
         "Accept": "*/*",
