@@ -21,7 +21,13 @@ class ArticleSpiderItem(scrapy.Item):
     recent = Field()
     article = Field()
     domain = Field()
+    code = Field()
 
+
+class ArticleSpiderMainItem(scrapy.Item):
+    link = Field()
+    article = Field()
+    code = Field()
 
 class ZhihuItem(Item):
     # define the fields for your item here like:
