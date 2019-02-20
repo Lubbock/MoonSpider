@@ -20,19 +20,15 @@ class ArticleSpider(Spider):
     }
 
     def parse(self, response):
-        items = []
-        recent_articles = response.xpath('//div[@class="listmain"]/dl/dd[position()<6]/a')
-        all_articles = response.xpath('//div[@class="listmain"]/dl/dd[position()>6]/a')
-        self.extract_item(items, recent_articles, True)
-        self.extract_item(items, all_articles)
-        return items
-
-    def extract_item(self, items, articles, recent=False):
+        articles = response.xpath('//div[@class="listmain"]/dl/dd/a')
+        # all_articles = response.xpath('//div[@class="listmain"]/dl/dd[position()>6]/a')
+        i = 0
         for title in articles:
             item = ArticleSpiderItem()
             item['title'] = title.xpath("text()").extract()[0].strip()
             item['link'] = title.xpath("@href").extract()[0].strip()
-            item['recent'] = recent
+            item['recent'] = True if i < 6 else False
             item['domain'] = self.domain_name
             item['article'] = ""
-            items.append(item)
+            i += 1
+            yield item
