@@ -6,8 +6,8 @@
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
 
-from MoonSpider.items import ArticleSpiderItem, ArticleSpiderMainItem
-from MoonSpider.utils.DbUtils import DbUtils
+from MoonSpider.items import ArticleSpiderItem, ArticleSpiderMainItem, QiccSpiderItem
+from MoonSpider.utils2.DbUtils import DbUtils
 
 
 class MoonspiderPipeline(object):
@@ -52,3 +52,19 @@ class ArticleSpiderMainPipeline(object):
             my_query = {'link': item['link'], 'code': item['code']}
             update_query = {"$set": {'article': item['article']}}
             self.dbUtil.update_one(my_query, update_query)
+
+
+class QiccSpiderPipeline(object):
+    dbUtil = DbUtils()
+
+    def process_item(self, item, spider):
+        if isinstance(item, QiccSpiderItem):
+            content = {
+                'social_credit': item['social_credit'],
+                'company_name': item['company_name'],
+                'article': item['company_name'],
+                'url': item['url']
+            }
+            self.dbUtil.insert(content)
+
+        return item

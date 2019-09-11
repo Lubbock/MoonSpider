@@ -30,6 +30,21 @@ class ArticleSpiderMainItem(scrapy.Item):
     article = Field()
     code = Field()
 
+
+# -*- coding: utf-8 -*-
+class QiccSpiderItem(scrapy.Item):
+    company_name = Field()
+    # 统一社会信用代码
+    social_credit = Field()
+    article = Field()
+    url = Field()
+
+
+class QiccSpiderList(scrapy.Item):
+    keyword = Field()
+    page = Field()
+
+
 class ZhihuItem(Item):
     # define the fields for your item here like:
     # name = scrapy.Field()

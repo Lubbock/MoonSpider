@@ -1,4 +1,6 @@
-
+# -*- coding: utf-8 -*-
 from scrapy import cmdline
 
-cmdline.execute("scrapy crawl article_robot".split())
+
+if __name__ == "__main__":
+    cmdline.execute("scrapy crawl qicc".split())

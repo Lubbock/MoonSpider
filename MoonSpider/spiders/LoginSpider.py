@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from scrapy.spiders import Spider, Rule
 from scrapy.selector import Selector
 

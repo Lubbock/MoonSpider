@@ -1,8 +1,9 @@
+# -*- coding: utf-8 -*-
 from scrapy.spiders import Spider
 import scrapy
 
 from MoonSpider.items import ArticleSpiderItem, ArticleSpiderMainItem
-from MoonSpider.utils.DbUtils import DbUtils
+from MoonSpider.utils2.DbUtils import DbUtils
 
 
 class ArticleSpider(Spider):

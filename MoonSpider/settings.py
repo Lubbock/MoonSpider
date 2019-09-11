@@ -13,7 +13,17 @@ BOT_NAME = 'MoonSpider'
 
 SPIDER_MODULES = ['MoonSpider.spiders']
 NEWSPIDER_MODULE = 'MoonSpider.spiders'
-DEPTH_LIMIT = 1
+DEPTH_LIMIT = 4
+
+DEFAULT_REQUEST_HEADERS = {
+        "Accept": "*/*",
+        "Accept-Encoding": "gzip,deflate",
+        "Accept-Language": "en-US,en;q=0.8,zh-TW;q=0.6,zh;q=0.4",
+        "Connection": "keep-alive",
+        "Content-Type": " application/x-www-form-urlencoded; charset=UTF-8",
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36",
+        "Referer": "https://www.qichacha.com"
+    }
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'MoonSpider (+http://www.yourdomain.com)'
@@ -58,6 +68,10 @@ AJAXCRAWL_ENABLED = True
 #    'MoonSpider.middlewares.MoonspiderDownloaderMiddleware': 543,
 #}
 
+DOWNLOADER_MIDDLEWARES = {
+   'MoonSpider.middlewares.UserAgentDownloadMiddleware': 543,
+}
+
 # Enable or disable extensions
 # See https://doc.scrapy.org/en/latest/topics/extensions.html
 #EXTENSIONS = {
@@ -67,8 +81,9 @@ AJAXCRAWL_ENABLED = True
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'MoonSpider.pipelines.ArticleSpiderPipeline': 300,
-   'MoonSpider.pipelines.ArticleSpiderMainPipeline': 300,
+   # 'MoonSpider.pipelines.ArticleSpiderPipeline': 300,
+   # 'MoonSpider.pipelines.ArticleSpiderMainPipeline': 300,
+    'MoonSpider.pipelines.QiccSpiderPipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
