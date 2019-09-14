@@ -45,7 +45,7 @@ class QiccSpider(Spider):
             #     yield scrapy.Request(next_page)
 
             for key in self.search_key:
-                print key
+                print(key)
                 yield scrapy.Request("https://www.qichacha.com/search_index?key=" + key + "&ajaxflag=1&p=1&",
                                      callback=self.list_parse)
 
