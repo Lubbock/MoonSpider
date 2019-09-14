@@ -36,7 +36,7 @@ class QiccSpiderItem(scrapy.Item):
     company_name = Field()
     # 统一社会信用代码
     social_credit = Field()
-    article = Field()
+    # article = Field()
     url = Field()
 
 

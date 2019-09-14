@@ -13,17 +13,7 @@ BOT_NAME = 'MoonSpider'
 
 SPIDER_MODULES = ['MoonSpider.spiders']
 NEWSPIDER_MODULE = 'MoonSpider.spiders'
-DEPTH_LIMIT = 4
-
-DEFAULT_REQUEST_HEADERS = {
-        "Accept": "*/*",
-        "Accept-Encoding": "gzip,deflate",
-        "Accept-Language": "en-US,en;q=0.8,zh-TW;q=0.6,zh;q=0.4",
-        "Connection": "keep-alive",
-        "Content-Type": " application/x-www-form-urlencoded; charset=UTF-8",
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36",
-        "Referer": "https://www.qichacha.com"
-    }
+DEPTH_LIMIT = 0
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'MoonSpider (+http://www.yourdomain.com)'
@@ -37,7 +27,7 @@ ROBOTSTXT_OBEY = False
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY = 3
+DOWNLOAD_DELAY = 1
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP = 16
@@ -101,7 +91,7 @@ ITEM_PIPELINES = {
 
 # Enable and configure HTTP caching (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html#httpcache-middleware-settings
-#HTTPCACHE_ENABLED = True
+#HTTPCACHE_ENABLED = TrueF
 #HTTPCACHE_EXPIRATION_SECS = 0
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []

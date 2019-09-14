@@ -5,6 +5,9 @@ from scrapy.spiders import Spider
 import scrapy
 
 from MoonSpider.items import QiccSpiderItem, QiccSpiderList
+from selenium import webdriver
+
+import time
 
 
 class QiccSpider(Spider):
@@ -13,6 +16,10 @@ class QiccSpider(Spider):
     allowed_domains = ['www.qichacha.com']
     start_urls = ["https://www.qichacha.com/search_index?key=%E9%A9%AC%E4%BA%91&ajaxflag=1&p=1&"]
     key = "福建"
+
+    def __init__(self):
+        # 定义保存登录成功之后的cookie的变量
+        self.login_cookies = []
 
     headers = {
         "Accept": "*/*",
@@ -24,7 +31,22 @@ class QiccSpider(Spider):
         "Referer": "https://www.qichacha.com"
     }
 
-    search_key = [ "广西", "赵", "钱", "孙", "李", "周", "物", "计"]
+    search_key = ["肖战", "杨幂", "关晓彤", "蔡徐坤","王鸥","赵丽颖","张晓晨","郑爽","李荣浩", "张艺兴", "刘亦菲","杨紫","赵薇","谢娜","华晨宇"]
+
+    def get_cookies(self):
+        browser = webdriver.Chrome(executable_path="D:/code/MoonSpider/drivers/chromedriver.exe")
+        time.sleep(3)
+        browser.get("https://www.qichacha.com/")
+        self.login_cookies = browser.get_cookies()
+        browser.close()
+
+    def start_requests(self):
+        self.get_cookies()
+        # 开始访问登录后的内容
+        return [scrapy.Request(self.start_urls[0],
+                               headers=self.headers,
+                               cookies=self.login_cookies,
+                               callback=self.parse)]
 
     def parse(self, response):
 
@@ -38,7 +60,8 @@ class QiccSpider(Spider):
             for item in results:
                 abs_route = item.xpath("@href").extract_first().strip()
                 content_url = self.domain_name + abs_route
-                yield scrapy.Request(content_url, callback=self.content_parse)
+                yield scrapy.Request(content_url, headers=self.headers,
+                                     cookies=self.login_cookies, callback=self.content_parse)
 
             # if page <= 3:
             #     next_page = url[:-2] + str(page + 1) + "&"
@@ -47,11 +70,14 @@ class QiccSpider(Spider):
             for key in self.search_key:
                 print(key)
                 yield scrapy.Request("https://www.qichacha.com/search_index?key=" + key + "&ajaxflag=1&p=1&",
+                                     headers=self.headers,
+                                     cookies=self.login_cookies,
                                      callback=self.list_parse)
 
     def list_parse(self, response):
         results = response.xpath('//tbody[@id="search-result"]//a[@class="ma_h1"]')
         vipr = response.xpath('//div[@id="cxjg2VipInsert"]')
+        print(response.request.url)
         for item in results:
             abs_route = item.xpath("@href").extract_first().strip()
             content_url = self.domain_name + abs_route
@@ -63,9 +89,13 @@ class QiccSpider(Spider):
         # type = response.xpath('//table[@class="ntable"]//tr[4]/td[1]/text()').extract_first().strip()
         # 统一社会信用代码
         url = response.request.url
+        print(url)
+        if social_credict is None:
+            self.get_cookies()
+
         qicc_item = QiccSpiderItem()
         qicc_item['social_credit'] = social_credict
         qicc_item['company_name'] = cp_name
-        qicc_item['article'] = response.text
+        # qicc_item['article'] = response.text
         qicc_item['url'] = url
         return qicc_item
