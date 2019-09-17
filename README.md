@@ -10,6 +10,7 @@
 2. DownloadDelpay 设置为0，因为之前爬的太慢了，正常访问的时候，延迟需要放大
 3. 由于qichacha限制，没有vip拉不到所有数据，又懒得登录，所以需要枚举search key ,目前采用人名枚举 
 4. 爬虫depth设置为8
+5. 刚找到了companyName可以用来替换qichacha查询的search key
 
 ## 其他爬虫方案
 1. 使用crawlera管理ip代理
