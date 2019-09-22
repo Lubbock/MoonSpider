@@ -62,7 +62,7 @@ class QiccSpiderPipeline(object):
             content = {
                 'social_credit': item['social_credit'],
                 'company_name': item['company_name'],
-                'article': item['company_name'],
+                'article': item['article'],
                 'url': item['url']
             }
             self.dbUtil.insert(content)

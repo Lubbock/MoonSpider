@@ -6,7 +6,7 @@ import scrapy
 
 from MoonSpider.items import QiccSpiderItem, QiccSpiderList
 from selenium import webdriver
-
+import pandas as pd
 import time
 
 
@@ -31,11 +31,10 @@ class QiccSpider(Spider):
         "Referer": "https://www.qichacha.com"
     }
 
-    search_key = ["肖战", "杨幂", "关晓彤", "蔡徐坤","王鸥","赵丽颖","张晓晨","郑爽","李荣浩", "张艺兴", "刘亦菲","杨紫","赵薇","谢娜","华晨宇"]
+    search_key = pd.read_csv("D:/code/MoonSpider/MoonSpider/spiders/qicc/key.csv")
 
     def get_cookies(self):
         browser = webdriver.Chrome(executable_path="D:/code/MoonSpider/drivers/chromedriver.exe")
-        time.sleep(3)
         browser.get("https://www.qichacha.com/")
         self.login_cookies = browser.get_cookies()
         browser.close()
@@ -67,9 +66,14 @@ class QiccSpider(Spider):
             #     next_page = url[:-2] + str(page + 1) + "&"
             #     yield scrapy.Request(next_page)
 
-            for key in self.search_key:
+            i = 0
+            for key in self.search_key.values:
+                if i < 2000:
+                    i += 1
+                else:
+                    break
                 print(key)
-                yield scrapy.Request("https://www.qichacha.com/search_index?key=" + key + "&ajaxflag=1&p=1&",
+                yield scrapy.Request("https://www.qichacha.com/search_index?key=" + key[0] + "&ajaxflag=1&p=1&",
                                      headers=self.headers,
                                      cookies=self.login_cookies,
                                      callback=self.list_parse)
@@ -84,18 +88,21 @@ class QiccSpider(Spider):
             yield scrapy.Request(content_url, callback=self.content_parse)
 
     def content_parse(self, response):
-        cp_name = response.xpath('//div[@class="content"]//h1/text()').extract_first().strip()
+        finds = response.xpath('//div[@class="content"]//h1/text()').extract_first()
+        if finds is None:
+            self.get_cookies()
+            return None
+        cp_name = finds.strip()
         social_credict = response.xpath('//table[@class="ntable"]//tr[4]/td[2]/text()').extract_first().strip()
         # type = response.xpath('//table[@class="ntable"]//tr[4]/td[1]/text()').extract_first().strip()
         # 统一社会信用代码
         url = response.request.url
         print(url)
-        if social_credict is None:
-            self.get_cookies()
+
 
         qicc_item = QiccSpiderItem()
         qicc_item['social_credit'] = social_credict
         qicc_item['company_name'] = cp_name
-        # qicc_item['article'] = response.text
+        qicc_item['article'] = response.text
         qicc_item['url'] = url
         return qicc_item
