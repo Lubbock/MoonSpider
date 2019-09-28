@@ -80,6 +80,9 @@ class QiccSpider(Spider):
 
     def list_parse(self, response):
         results = response.xpath('//tbody[@id="search-result"]//a[@class="ma_h1"]')
+        if results.extract_first() is None:
+            self.get_cookies()
+            return None
         vipr = response.xpath('//div[@id="cxjg2VipInsert"]')
         print(response.request.url)
         for item in results:
