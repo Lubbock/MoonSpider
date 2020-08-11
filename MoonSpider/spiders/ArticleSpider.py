@@ -3,7 +3,7 @@ from scrapy.spiders import Spider
 import scrapy
 
 from MoonSpider.items import ArticleSpiderItem, ArticleSpiderMainItem
-from MoonSpider.utils2.DbUtils import DbUtils
+from MoonSpider.storage.storage import MongoStorage
 
 
 class ArticleSpider(Spider):
@@ -29,7 +29,7 @@ class ArticleSpider(Spider):
         i = 0
         links = []
         article_nums = len(articles)
-        db = DbUtils()
+        db = MongoStorage()
         recent = db.get_recent_article(self.article_code)
         not_update = len(articles) - recent['article_order']
 

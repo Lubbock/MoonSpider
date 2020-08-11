@@ -7,7 +7,7 @@
 
 
 from MoonSpider.items import ArticleSpiderItem, ArticleSpiderMainItem, QiccSpiderItem
-from MoonSpider.utils2.DbUtils import DbUtils
+from MoonSpider.storage.storage import MongoStorage
 
 
 class MoonspiderPipeline(object):
@@ -16,7 +16,7 @@ class MoonspiderPipeline(object):
 
 
 class ArticleSpiderPipeline(object):
-    dbUtil = DbUtils()
+    dbUtil = MongoStorage()
 
     def __init__(self):
         self.fp = None
@@ -44,18 +44,18 @@ class ArticleSpiderPipeline(object):
 
 
 class ArticleSpiderMainPipeline(object):
-    dbUtil = DbUtils()
+    dbUtil = MongoStorage()
 
     def process_item(self, item, spider):
         if isinstance(item, ArticleSpiderMainItem):
-            print('存储文章内容')
+            print('存储文章内容',item['article'])
             my_query = {'link': item['link'], 'code': item['code']}
             update_query = {"$set": {'article': item['article']}}
             self.dbUtil.update_one(my_query, update_query)
 
 
 class QiccSpiderPipeline(object):
-    dbUtil = DbUtils()
+    dbUtil = MongoStorage()
 
     def process_item(self, item, spider):
         if isinstance(item, QiccSpiderItem):
